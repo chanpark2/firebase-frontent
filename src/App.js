@@ -1,25 +1,47 @@
-import logo from './logo.svg';
 import './App.css';
+import {firebaseApp}  from "./firebase";
+import { getMessaging,getToken,onMessage } from "firebase/messaging";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const firebaseMessaging = getMessaging(firebaseApp);
+getToken(firebaseMessaging, {vapidKey: "type user validKey"}).then((currentToken) => {
+  if (currentToken) {
+    console.log(currentToken);
+  } else {
+    console.log('No registration token available. Request permission to generate one.');
+  }
+}).catch((err) => {
+  console.log('An error occurred while retrieving token. ', err);
+  
+});
+
+onMessage(firebaseMessaging, (payload) => {
+  console.log('Message received. ', payload);
+})
+
+
+// firebaseMessaging
+//   .requestPermission()
+//   .then(() => {
+//     return getToken(); // 등록 토큰 받기
+//   })
+//   .then(function (token) {
+//     console.log(token); //토큰 출력
+//   })
+//   .catch(function (error) {
+//     console.log("FCM Error : ", error);
+//   });
+
+//   firebaseMessaging.onMessage((payload) => {
+//     console.log(payload.notification.title);
+//     console.log(payload.notification.body);
+//   });
+
+  function App() {
+    return (
+      <div className="App">
+        <h1>FCM TEST</h1>
+      </div>
+    );
+  }
 
 export default App;
